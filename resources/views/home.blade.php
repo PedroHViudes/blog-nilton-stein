@@ -42,7 +42,7 @@
                 {{-- AQUI TERMINA A MÁGICA --}}
 
             </div>
-             {{-- Adicionando o botão para ver todas as publicações --}}
+             {{-- Adicionando o botão para ver todas as publicações   muita treat --}}
              <div class="posts-call-to-action text-center" style="margin-top: 4rem;">
                 <a href="{{ route('blog.index') }}" class="btn btn-primary">Ver todas as publicações</a>
             </div>
