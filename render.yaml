@@ -1,15 +1,15 @@
-# Manual de instruções para o Render.com
+# Manual de instruções CORRIGIDO para o Render.com
 
-services:
-  # Serviço 1: O Banco de Dados (Nossa Caixa d'Água)
-  - type: psql
-    name: banco-blog-nilton
+# Seção para o banco de dados
+databases:
+  - name: banco-blog-nilton
     plan: free
 
-  # Serviço 2: O Site Laravel (Nossa Casa)
+# Seção separada para o site
+services:
   - type: web
     name: blog-nilton-stein
-    runtime: php      # <-- AQUI ESTÁ A MÁGICA! Forçamos o ambiente PHP.
+    runtime: php
     plan: free
     buildCommand: "composer install && php artisan migrate --force"
     startCommand: "php artisan serve --host 0.0.0.0 --port $PORT"
@@ -17,22 +17,23 @@ services:
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
-        value: psql # O Render vai substituir isso pelo endereço interno do banco
+        fromDatabase: # Usamos fromDatabase para conectar
+          name: banco-blog-nilton
+          property: host
       - key: DB_PORT
-        value: 5432
+        fromDatabase:
+          name: banco-blog-nilton
+          property: port
       - key: DB_DATABASE
-        fromService:
-          type: psql
+        fromDatabase:
           name: banco-blog-nilton
           property: database
       - key: DB_USERNAME
-        fromService:
-          type: psql
+        fromDatabase:
           name: banco-blog-nilton
           property: user
       - key: DB_PASSWORD
-        fromService:
-          type: psql
+        fromDatabase:
           name: banco-blog-nilton
           property: password
       - key: APP_URL
@@ -44,5 +45,5 @@ services:
         value: production
       - key: APP_DEBUG
         value: false
-      - key: APP_KEY # Esta chave é um segredo, vamos adicioná-la manualmente.
+      - key: APP_KEY # Esta chave secreta será adicionada manualmente
         sync: false
