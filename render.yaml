@@ -4,20 +4,24 @@
 databases:
   - name: banco-blog-nilton
     plan: free
+    region: oregon # Adicionar a região é uma boa prática
 
 # Seção separada para o site
 services:
   - type: web
     name: blog-nilton-stein
-    runtime: php
+    # A linha 'runtime: php' foi removida porque é inválida.
+    # O Render detecta o PHP automaticamente pela presença do arquivo composer.json.
+    env: php
     plan: free
-    buildCommand: "composer install && php artisan migrate --force"
+    region: oregon # Use a mesma região do banco de dados
+    buildCommand: "composer install && php artisan key:generate && php artisan migrate --force"
     startCommand: "php artisan serve --host 0.0.0.0 --port $PORT"
     envVars:
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
-        fromDatabase: # Usamos fromDatabase para conectar
+        fromDatabase:
           name: banco-blog-nilton
           property: host
       - key: DB_PORT
@@ -37,13 +41,14 @@ services:
           name: banco-blog-nilton
           property: password
       - key: APP_URL
-        fromService:
-          type: web
-          name: blog-nilton-stein
-          property: url
+        # CORREÇÃO: 'url' não é uma propriedade válida.
+        # Use a variável de ambiente RENDER_EXTERNAL_URL que o Render fornece.
+        value: ${RENDER_EXTERNAL_URL}
       - key: APP_ENV
         value: production
       - key: APP_DEBUG
         value: false
-      - key: APP_KEY # Esta chave secreta será adicionada manualmente
-        sync: false
+      - key: APP_KEY
+        # O ideal é gerar a chave no build com 'php artisan key:generate'
+        # e sincronizá-la. Mas se preferir, mantenha sync: false e adicione manualmente.
+        sync: true
