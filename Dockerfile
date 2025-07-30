@@ -32,9 +32,12 @@ RUN composer install --no-dev --no-scripts --no-autoloader
 # Copia o resto do código do seu projeto
 COPY . .
 
-# Gera o autoloader do Composer e a chave do app
+# <<< ADICIONE A LINHA ABAIXO >>>
+# Dá permissão para o nosso script de inicialização ser executado
+RUN chmod +x /app/start.sh
+
+# Gera o autoloader do Composer
 RUN composer dump-autoload --optimize
-# A APP_KEY será injetada pelas variáveis de ambiente do Render, não precisa gerar aqui.
 
 # Muda a propriedade da pasta para o usuário do servidor web para evitar problemas de permissão
 RUN chown -R www-data:www-data storage bootstrap/cache
