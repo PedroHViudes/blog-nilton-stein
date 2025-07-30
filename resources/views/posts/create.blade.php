@@ -29,8 +29,9 @@
             <div class="form-group">
                 <label for="content">Conteúdo</label>
                 {{-- O id="content" aqui é o que o TinyMCE usa para encontrar a textarea --}}
-                <textarea id="content" name="content" class="form-control" rows="10"
-                    required>{{ old('content') }}</textarea>
+
+                <textarea id="content" name="content" class="form-control" rows="10">{{ old('content') }}</textarea>
+
                 @error('content')<div style="color:red;font-size:0.8rem;">{{ $message }}</div>@enderror
             </div>
 
