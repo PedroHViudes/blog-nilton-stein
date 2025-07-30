@@ -2,11 +2,14 @@
 FROM php:8.2-fpm
 
 # Instala dependências do sistema necessárias para o Laravel e o Composer
+# >>> ADICIONAMOS nodejs e npm AQUI <<<
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
     zip \
     curl \
+    nodejs \
+    npm \
     libpng-dev \
     libjpeg62-turbo-dev \
     libfreetype6-dev \
@@ -32,7 +35,11 @@ RUN composer install --no-dev --no-scripts --no-autoloader
 # Copia o resto do código do seu projeto
 COPY . .
 
-# <<< ADICIONE A LINHA ABAIXO >>>
+# >>> ADICIONAMOS AS LINHAS ABAIXO <<<
+# Instala dependências do front-end e constrói os arquivos CSS/JS
+RUN npm install
+RUN npm run build
+
 # Dá permissão para o nosso script de inicialização ser executado
 RUN chmod +x /app/start.sh
 
